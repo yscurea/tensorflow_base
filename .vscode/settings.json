@@ -2,6 +2,7 @@
 	"cSpell.words": [
 		"accum",
 		"albumentations",
+		"argmax",
 		"BGRA",
 		"clipnorm",
 		"clipvalue",
@@ -20,7 +21,8 @@
 		"ndarray",
 		"omegaconf",
 		"optuna",
-		"subdir"
+		"subdir",
+		"unifyai"
 	],
 	"material-icon-theme.folders.associations": {
 		"datasets": "Database",
@@ -56,4 +58,7 @@
 	"terminal.integrated.defaultProfile.windows": "Command Prompt",
 	"python.terminal.activateEnvironment": true,
 	"python.terminal.activateEnvInCurrentTerminal": false,
+	"black-formatter.args": [
+		"--line-length=120"
+	]
 }

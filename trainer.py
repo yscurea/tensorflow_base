@@ -5,6 +5,7 @@ import cv2
 import hydra
 import mlflow
 import tensorflow as tf
+from hydra.core.hydra_config import HydraConfig
 from omegaconf import OmegaConf
 
 from augment.augment_manager import AugmentManager
@@ -17,14 +18,14 @@ from utils import flatten, get_best_weights
 
 
 def train(train_config: TrainConfig) -> float:
-    mlflow.set_tracking_uri(
-        uri=f"file://{hydra.utils.get_original_cwd()}/logs/mlruns"
-    )
+    mlflow.set_tracking_uri(uri=f"file://{hydra.utils.get_original_cwd()}/logs/mlruns")
     mlflow.set_experiment(train_config.comment)
+    log_dir = HydraConfig.get().runtime.output_dir
+    print(log_dir)
 
     with mlflow.start_run():
         mlflow.log_params(dict(flatten(OmegaConf.to_container(train_config))))
-        mlflow.log_artifact(train_config.log_dir + "/.hydra/config.yaml")
+        mlflow.log_artifact(log_dir + "/.hydra/config.yaml")
 
         image_height = train_config.model_config.input_image_shape[0]
         image_width = train_config.model_config.input_image_shape[1]
@@ -32,8 +33,8 @@ def train(train_config: TrainConfig) -> float:
         # Build augment and save setting file
         augment_manager = AugmentManager()
         train_data_transforms = augment_manager.build_alb_augment(
-            train_config.log_dir + "/augment.yaml",
             image_shape=train_config.model_config.input_image_shape,
+            filepath=Path(log_dir) / train_config.data_config.augment_setting_path_to_save,
         )
         validation_data_transforms = alb.Compose(
             [
@@ -99,7 +100,7 @@ def train(train_config: TrainConfig) -> float:
         loss, accuracy = model.evaluate(validation_data_generator)
 
         # Log best score
-        mlflow.log_metrics({"best_loss": loss, "best_accuracy": accuracy})
+        # mlflow.log_metrics({"best_loss": loss, "best_accuracy": accuracy})
         mlflow.tensorflow.log_model(model)
 
         return loss

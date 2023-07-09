@@ -1,4 +1,7 @@
+import logging
+
 import hydra
+from hydra.core.hydra_config import HydraConfig
 from hydra.utils import instantiate
 from omegaconf import OmegaConf
 
@@ -16,6 +19,8 @@ def as_tuple(*args):
     config_name="default_config.yaml",
 )
 def main(config: TrainConfig):
+    log_dir = HydraConfig.get().runtime.output_dir
+    logging.info(log_dir)
     config = instantiate(config)
     return train(config)
 

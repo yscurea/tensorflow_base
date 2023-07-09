@@ -10,7 +10,7 @@ FOR /F "tokens=* delims=" %%G IN (.env) DO SET %%G
 call %USERPROFILE%\anaconda3\Scripts\activate.bat
 call activate %ANACONDA_ENV_NAME%
 
-set comment="バッチサイズを調整"
+set comment="sample comment"
 
 echo %comment%
 

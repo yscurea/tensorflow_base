@@ -2,8 +2,8 @@ defaults:
   - override hydra/sweeper: optuna
 
 hydra:
-  # run:
-  #   dir: &now_dir logs/${now:%Y-%m-%d}_${now:%H-%M-%S}
+  run:
+    dir: logs/${now:%Y-%m-%d}_${now:%H-%M-%S}
   sweep:
     dir: logs/${now:%Y-%m-%d}_${now:%H-%M-%S}
     subdir: ${hydra.job.num}
@@ -18,21 +18,19 @@ hydra:
 # Comment about experiments.
 comment: ~
 
-log_dir: &now_dir "${hydra:sweep.dir}/${hydra:sweep.subdir}"
-# log_dir: *now_dir
 epochs: 1000
 verbose: 1
 batch_size: 32
 workers: 1
-use_multiprocessing: false
-use_mixed_float16: false
+use_multiprocessing: False
+use_mixed_float16: False
 callback_config:
   early_stopping_config:
     monitor: "val_loss"
-    patience: 50
+    patience: 100
     verbose: 1
   model_checkpoint_config:
-    filepath: "${log_dir}/{epoch}_{val_loss:.4f}.h5"
+    filepath: "{epoch}_{val_loss:.4f}.h5"
     save_best_only: true
     save_weights_only: true
     monitor: "val_loss"
@@ -41,26 +39,27 @@ callback_config:
   reduce_lr_on_plateau_config:
     monitor: "val_loss"
     factor: 0.1
-    patience: 16
-    min_lr: 1.0e-7
+    patience: 30
+    min_lr: 1.0e-8
     verbose: 1
-  tensor_board_config: null  # Do not add callback, if null
-    # log_dir: "${log_dir}"
+  tensor_board_config: null # Do not add callback, if null
 
 # model settings
 model_config:
   name: "sample_model_name"
   summarize: false
   # about model shape
-  input_image_shape: ${as_tuple:256,256,3}
+  input_image_shape: ${as_tuple:224,224,3}
   num_classes: 26
 
 optimizer_config:
   learning_rate: 1.0e-4
   optimizer: "Adam"
-  use_gradient_accumulation: true
+  use_gradient_accumulation: false
   accumulation_steps: 4
-loss: "binary_crossentropy"
+  clipnorm: null
+  global_clipnorm: null
+loss: "categorical_crossentropy"
 loss_weights: ~
 metrics: "accuracy"
 
@@ -68,4 +67,4 @@ metrics: "accuracy"
 data_config:
   shuffle: true
   augment_all_combination: false
-  augment_setting_path_to_save: "${log_dir}/${hydra:job.num}/augment_setting.yaml"
+  augment_setting_file_name: "augment_setting.yaml"

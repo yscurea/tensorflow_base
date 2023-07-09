@@ -15,7 +15,7 @@ class TensorBoardConfig:
 
 @dataclass
 class ModelCheckpointConfig:
-    filepath: str = "${log_dir}/${hydra:job.num}/{epoch}_{val_loss:.4f}.h5"
+    filepath: str = "${hydra:job.num}/{epoch}_{val_loss:.4f}.h5"
     save_best_only: bool = True
     save_weights_only: bool = True
     monitor: str = "val_loss"

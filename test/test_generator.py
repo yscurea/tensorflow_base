@@ -12,3 +12,7 @@ class GeneratorTest(unittest.TestCase):
 
     def test_generated_batch_shape(self):
         raise NotImplementedError()
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -11,7 +11,6 @@ from .optimizer_config import OptimizerConfig
 @dataclass
 class TrainConfig:
     comment: str
-    log_dir: str
     epochs: int
     verbose: int
     batch_size: int
@@ -21,9 +20,9 @@ class TrainConfig:
 
     callback_config: CallbackConfig
     model_config: ModelConfig
-    data_config: DataConfig
-
     optimizer_config: OptimizerConfig
     loss: dict[str, str] | str | tf.losses.Loss | dict[str, tf.losses.Loss]
     loss_weights: dict[str, float] | None
     metrics: list[str] | str | None
+
+    data_config: DataConfig

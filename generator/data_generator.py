@@ -7,6 +7,7 @@ import numpy as np
 import tensorflow as tf
 
 
+# TODO: Prepare data generator.
 class DataGenerator(tf.keras.utils.Sequence):
     """Sample data generator."""
 
@@ -18,7 +19,6 @@ class DataGenerator(tf.keras.utils.Sequence):
     ) -> None:
         self.__batch_size = batch_size
         self.__transforms = transforms
-        # TODO: Prepare data. Sample data: image path and label list.
         self.__data_list: list[tuple[str, int]] = data_list
         random.shuffle(self.__data_list)
 
@@ -32,9 +32,7 @@ class DataGenerator(tf.keras.utils.Sequence):
         batch_x, batch_y = self.__get_data(batch_data)
         return batch_x, batch_y
 
-    def __get_data(
-        self, batch_data: list[tuple[str, int]]
-    ) -> tuple[np.ndarray, np.ndarray]:
+    def __get_data(self, batch_data: list[tuple[str, int]]) -> tuple[np.ndarray, np.ndarray]:
         """Build sample data."""
         batch_x = []
         batch_y = []
